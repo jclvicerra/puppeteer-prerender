@@ -1,0 +1,72 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "distributionDomainName": "d32monxr7g6hfm.cloudfront.net",
+          "distributionId": "EIL8DH2A7NWMV",
+          "eventType": "origin-request"
+        },
+        "request": {
+          "clientIp": "122.53.56.146",
+          "headers": {
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Amazon CloudFront"
+              }
+            ],
+            "via": [
+              {
+                "key": "Via",
+                "value": "1.1 5d5c664231877550d6bbb1c375b251a7.cloudfront.net (CloudFront)"
+              }
+            ],
+            "x-prerender-token": [
+              {
+                "key": "X-Prerender-Token",
+                "value": "PRERENDER_TOKEN"
+              }
+            ],
+            "x-prerender-host": [
+              {
+                "key": "X-Prerender-Host",
+                "value": "test.realestate.sg"
+              }
+            ],
+            "x-prerender-cachebuster": [
+              {
+                "key": "X-Prerender-Cachebuster",
+                "value": "1555124226407"
+              }
+            ],
+            "x-forwarded-for": [
+              {
+                "key": "X-Forwarded-For",
+                "value": "122.53.56.146"
+              }
+            ],
+            "host": [
+              {
+                "key": "Host",
+                "value": "beta-realestate-sg.s3.amazonaws.com"
+              }
+            ]
+          },
+          "method": "GET",
+          "origin": {
+            "s3": {
+              "authMethod": "origin-access-identity",
+              "customHeaders": {},
+              "domainName": "beta-realestate-sg.s3.amazonaws.com",
+              "path": "",
+              "region": "us-east-1"
+            }
+          },
+          "querystring": "",
+          "uri": "/index.html"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+.git
+.gitignore
+
+/sam-app
+/lambda
