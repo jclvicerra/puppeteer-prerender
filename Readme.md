@@ -16,7 +16,7 @@ Useful server side rendering through proxy. Outputs HTML, PDF and screenshots as
 │   └── core                    <-- Contains core classes for rendering
 │     └── Renderer.js           <-- Puppeteer renderer code
     └── routes                  <-- Contains express routes
-│     └── health.js             <-- Health check route
+│     └── health.js             <-- Health check route - prerender-service.io/_health
 │     └── renderer.js           <-- Renderer route
 │   └── cache.js                <-- Renderer in-memory cache
 │   └── index.js                <-- Express app entry point 
@@ -41,6 +41,12 @@ docker build -t puppeteer-chrome-linux .
 
 ```bash
 docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome -p 8080:3000 puppeteer-chrome-linux
+```
+
+### Deploying to Elasticbeanstalk
+
+```bash
+eb deploy
 ```
 
 ## API
