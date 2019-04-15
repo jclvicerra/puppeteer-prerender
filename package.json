@@ -1,20 +1,22 @@
 {
-  "name": "prerender-pup",
+  "name": "puppeteer-prerender",
   "version": "1.0.0",
-  "description": "",
-  "main": "screenshot.js",
+  "description": "Express app for web rendering",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "start": "NODE_ENV=production node src/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@godaddy/terminus": "^4.1.0",
     "compression": "^1.7.4",
+    "config": "^3.1.0",
     "content-disposition": "^0.5.3",
     "express": "^4.16.4",
+    "express-pino-logger": "^4.0.0",
     "helmet": "^3.16.0",
-    "node-cache": "^4.2.0"
+    "node-cache": "^4.2.0",
+    "puppeteer": "^1.14.0"
   }
 }

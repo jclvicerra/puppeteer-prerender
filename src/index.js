@@ -1,15 +1,20 @@
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
+const pino = require('express-pino-logger')();
+
 const nodeCache = require('./cache');
 const health = require('./routes/health');
 const renderer = require('./routes/renderer');
 const createRenderer = require('./core/Renderer');
 
+
+
 const app = express();
 
 app.use(helmet());
 app.use(compression());
+app.use(pino);
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
 

@@ -1,9 +1,8 @@
 const NodeCache = require('node-cache');
-
-const ttl = process.env.TTL || 86400; // 1 day
+const config = require('config');
 
 const myCache = new NodeCache({
-	stdTTL: ttl,
+	stdTTL: config.get('ttl'),
 });
 
 module.exports = myCache;
