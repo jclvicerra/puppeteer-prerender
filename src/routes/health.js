@@ -1,5 +1,6 @@
-const cache = require('./../cache');
 const config = require('config');
+const cache = require('./../cache');
+const queueMiddleware = require('./../middlewares/queueMiddleware');
 
 module.exports = async (req, res, next) => {
 
@@ -8,7 +9,9 @@ module.exports = async (req, res, next) => {
 	try {
 		res.status(200).jsonp({
 			cache: cache.getStats(),
-			cacheTTL: config.get('ttl')
+			cacheTTL: config.get('ttl'),
+			maxConcurrentSessions: config.get('maxConcurrentSessions'),
+			queueCount: queueMiddleware.queue.getLength()
 		});
 	} catch (e) {
 		res.status(500).jsonp({

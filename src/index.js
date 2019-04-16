@@ -5,16 +5,12 @@ const config = require('config');
 const compression = require('compression');
 const pino = require('express-pino-logger')();
 
-const nodeCache = require('./cache');
 const health = require('./routes/health');
 const renderer = require('./routes/renderer');
-// const createRenderer = require('./core/Renderer');
-
-const queue = require('express-queue');
+const metaCacheMiddleware = require('./middlewares/metaCacheMiddleware');
+const queueMiddleware = require('./middlewares/queueMiddleware');
 
 const app = express();
-
-const queueMiddleware = queue({ activeLimit: config.get('maxConcurrentSessions'), queuedLimit: -1 });
 
 app.use(helmet());
 app.use(compression());
@@ -22,28 +18,11 @@ app.use(pino);
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
 
-const metaCacheMiddleware = (req, res, next) => {
-
-	const query = req.query;
-
-	const { url } = query;
-
-	const key = url;
-	const cacheContent = nodeCache.get(key);
-	if (cacheContent) {
-		res.send(cacheContent);
-		return;
-	}
-	res.sendResponse = res.send;
-	res.send = (body) => {
-		nodeCache.set(key, body);
-		res.sendResponse(body);
-	};
-	next();
-};
-
 app.get('/_health', health);
-app.get('/', [metaCacheMiddleware, queueMiddleware], renderer);
+app.get('/render', [metaCacheMiddleware, queueMiddleware], renderer);
+app.get('/', function (req, res) {
+	res.send('renderer');
+});
 
 
 const port = app.get('port');
