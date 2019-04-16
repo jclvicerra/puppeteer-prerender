@@ -15,6 +15,7 @@
     "content-disposition": "^0.5.3",
     "express": "^4.16.4",
     "express-pino-logger": "^4.0.0",
+    "express-queue": "^0.0.12",
     "helmet": "^3.16.0",
     "node-cache": "^4.2.0",
     "puppeteer": "^1.14.0"

@@ -1,3 +1,4 @@
 module.exports = {
-  ttl: 'TTL',
+	ttl: 'TTL',
+	maxConcurrentSessions: 'MAX_CONCURRENT_SESSIONS'
 };

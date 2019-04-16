@@ -2,6 +2,7 @@
 
 const { URL } = require('url');
 const contentDisposition = require('content-disposition');
+const createRenderer = require('../core/Renderer');
 
 module.exports = async (req, res, next) => {
 
@@ -22,6 +23,9 @@ module.exports = async (req, res, next) => {
 	console.info(`Rendering url ${url} for type ${type} with options ${JSON.stringify(options)}`);
 
 	try {
+
+		const renderer = await createRenderer();
+
 		switch (type) {
 			case 'pdf':
 				const urlObj = new URL(url);
@@ -43,6 +47,7 @@ module.exports = async (req, res, next) => {
 						'Content-Disposition': contentDisposition(filename + '.pdf'),
 					})
 					.send(pdf);
+					renderer.close();
 				break
 
 			case 'screenshot':
@@ -53,13 +58,19 @@ module.exports = async (req, res, next) => {
 						'Content-Length': image.length,
 					})
 					.send(image);
+				renderer.close();
 				break;
 
 			default:
 				const html = await renderer.render(url, options);
 				res.status(200).send(html)
+				renderer.close();
 		}
 	} catch (e) {
+
+		if(renderer){
+			renderer.close();
+		}
 		next(e)
 	}
 };

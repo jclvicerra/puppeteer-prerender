@@ -1,16 +1,20 @@
 const express = require('express');
 const helmet = require('helmet');
+const config = require('config');
+
 const compression = require('compression');
 const pino = require('express-pino-logger')();
 
 const nodeCache = require('./cache');
 const health = require('./routes/health');
 const renderer = require('./routes/renderer');
-const createRenderer = require('./core/Renderer');
+// const createRenderer = require('./core/Renderer');
 
-
+const queue = require('express-queue');
 
 const app = express();
+
+const queueMiddleware = queue({ activeLimit: config.get('maxConcurrentSessions'), queuedLimit: -1 });
 
 app.use(helmet());
 app.use(compression());
@@ -39,19 +43,23 @@ const metaCacheMiddleware = (req, res, next) => {
 };
 
 app.get('/_health', health);
-app.get('/', metaCacheMiddleware, renderer);
+app.get('/', [metaCacheMiddleware, queueMiddleware], renderer);
 
-createRenderer()
-	.then(createdRenderer => {
-		app.set('renderer', createdRenderer);
-		console.info('Initialized renderer.');
 
-		const port = app.get('port');
-		app.listen(port, () => console.log(`Prerender Service listening on port ${port}!`));
-	})
-	.catch(e => {
-		console.error('Failed to initialze renderer.', e)
-	});
+const port = app.get('port');
+app.listen(port, () => console.log(`Prerender Service listening on port ${port}!`));
+
+// createRenderer()
+// 	.then(createdRenderer => {
+// 		app.set('renderer', createdRenderer);
+// 		console.info('Initialized renderer.');
+//
+// 		const port = app.get('port');
+// 		app.listen(port, () => console.log(`Prerender Service listening on port ${port}!`));
+// 	})
+// 	.catch(e => {
+// 		console.error('Failed to initialze renderer.', e)
+// 	});
 
 // Error page.
 // app.use((err, req, res) => {
@@ -60,7 +68,11 @@ createRenderer()
 // })
 
 // Terminate process
-process.on('SIGINT', () => {
-	process.exit(0);
-});
+// process.on('SIGINT', () => {
+// 	process.exit(0);
+// });
+let listener = null;
+if (!listener) {
+	listener = process.on('SIGINT', () => process.exit(0));
+}
 

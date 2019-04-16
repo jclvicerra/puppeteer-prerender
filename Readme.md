@@ -57,6 +57,17 @@ eb deploy
 |`type`   |          |`pdf` or `screenshot`|Rendering another type. |`http://puppeteer-renderer?url=http://www.google.com&type=pdf`|
 |(Extra options)|    |                     |Extra options (see [puppeteer API doc](https://github.com/GoogleChrome/puppeteer/blob/v1.1.0/docs/api.md#pagepdfoptions)) |`http://puppeteer-renderer?url=http://www.google.com&type=pdf&scale=2`|
 
+## Testing 
+
+```bash
+curl http://puppeteer-renderer?url=http://www.google.com
+```
+
+## Testing with lambda integration as Crawler
+
+```bash
+curl -A "Googlebot/2.1 (+http://www.google.com/bot.html)" https://example.com/property/condominium-sale-89-769134-+i+fJtDLo
+```
 
 ## PDF File Name Convention
 
