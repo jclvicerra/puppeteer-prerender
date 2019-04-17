@@ -2,27 +2,29 @@
 
 exports.handler = (event, context, callback) => {
 	const request = event.Records[0].cf.request;
-	const headers = request.headers;
-	const user_agent = headers['user-agent'];
-	const host = headers['host'];
 
-	if (user_agent && host) {
-		var prerender = /bot|googlebot|bingbot|yandex|baiduspider|Facebot|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator/i.test(user_agent[0].value);
-		prerender = prerender || /_escaped_fragment_/.test(request.querystring);
-		prerender = prerender && ! /\.(js|css|xml|less|png|jpg|jpeg|gif|pdf|doc|txt|ico|rss|zip|mp3|rar|exe|wmv|doc|avi|ppt|mpg|mpeg|tif|wav|mov|psd|ai|xls|mp4|m4a|swf|dat|dmg|iso|flv|m4v|torrent|ttf|woff|svg|eot|woff2)$/i.test(request.uri);
+	const isFromBot= request.headers['x-prerender-token'] && request.headers['x-prerender-path']
+	if (isFromBot) {
 
-		const uri = request.uri;
-		const qs = request.querystring;
+		let encodedPath = encodeURIComponent(`https://${request.headers['x-prerender-path'][0].value}`);
 
-		const path= qs ? `${host[0].value}${uri}?${qs}` : `${host[0].value}${uri}`;
+		encodedPath = encodedPath.replace(/\/+$/, "");
 
-		if (prerender) {
-			headers['x-prerender-token'] = [{ key: 'X-Prerender-Token', value: 'PRERENDER_TOKEN'}];
-			headers['x-prerender-host'] = [{ key: 'X-Prerender-Host', value: host[0].value}];
-			headers['x-prerender-path'] = [{ key: 'X-Prerender-Path', value: path}];
-			headers['x-prerender-cachebuster'] = [{ key: 'X-Prerender-Cachebuster', value: Date.now().toString()}];
-		}
+		request.origin = {
+			custom: {
+				domainName: 'prerender.realty.com.au',
+				port: 443,
+				protocol: 'https',
+				readTimeout: 20,
+				keepaliveTimeout: 5,
+				customHeaders: {},
+				sslProtocols: ['TLSv1', 'TLSv1.1'],
+				path: `/render?url=${encodedPath}`
+			}
+		};
 
+		request.headers['host'] = [{ key: 'Host', value: 'prerender.realestate.sg'}];
+		request['uri'] = "/";
 	}
 
 	callback(null, request);
