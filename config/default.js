@@ -1,4 +1,4 @@
 module.exports = {
-	ttl: 86400,
+	ttl: 3600,
 	maxConcurrentSessions: 10
 };

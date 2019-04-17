@@ -1,6 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
-const config = require('config');
+const cache = require('./cache');
 
 const compression = require('compression');
 const pino = require('express-pino-logger')();
@@ -19,9 +19,60 @@ app.disable('x-powered-by');
 app.set('port', process.env.PORT || 3000);
 
 app.get('/_health', health);
+
 app.get('/render', [metaCacheMiddleware, queueMiddleware], renderer);
-app.get('/', function (req, res) {
-	res.send('renderer');
+
+app.delete('/cache', (req, res) => {
+
+	let { url, type, ...options } = req.query;
+
+	if (!url) {
+		return res.status(400).send('Url is required');
+	}
+	cache.del(url, (err, count) => {
+		if (!err) {
+			return res.status(200).send(true);
+		} else {
+			return res.status(400).send(err);
+		}
+	})
+});
+
+app.get('/cache', (req, res) => {
+
+	let { url, type, ...options } = req.query;
+
+	if (url) {
+		cache.get(url, (err, value) => {
+
+			if (!err) {
+				if (value === undefined) {
+					return res.status(404).send(`Cache with url ${url} not found`);
+				} else {
+					return res.status(200).send(value);
+				}
+			}
+		})
+	} else {
+		cache.keys(function (err, cacheKeys) {
+			if (!err) {
+				return res.status(200).jsonp(cacheKeys);
+			} else {
+				return res.status(400).send(err);
+			}
+		});
+	}
+});
+
+app.post('/cache/flush', (req, res) => {
+
+	cache.flushAll();
+
+	return res.status(200).jsonp(cache.getStats());
+});
+
+app.get('/', (req, res) => {
+	res.send('Prerender Service');
 });
 
 
