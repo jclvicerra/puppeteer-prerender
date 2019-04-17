@@ -10,13 +10,11 @@ module.exports = async (req, res, next) => {
 
 	const renderer = app.get('renderer');
 
-	let { url: reqUrl, type, ...options } = req.query;
+	let { url, type, ...options } = req.query;
 
-	if (!reqUrl) {
+	if (!url) {
 		return res.status(400).send('Search with url parameter. For example, ?url=http://yourdomain')
 	}
-
-	let url = reqUrl.replace(/\/+$/, "");
 
 	if (!url.includes('://')) {
 		url = `http://${url}`
