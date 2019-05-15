@@ -51,7 +51,8 @@
                 "key": "Host",
                 "value": "beta-realestate-sg.s3.amazonaws.com"
               }
-            ]
+            ],
+
           },
           "method": "GET",
           "origin": {
